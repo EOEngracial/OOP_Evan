@@ -1,0 +1,237 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+abstract class Animal {
+    String name, habitat;
+    int age;
+    double weight;
+
+    abstract void makeSound();
+    abstract void eat();
+    abstract void sleep();
+
+    // Display the animal details
+    public void displayDetails() {
+        System.out.println("Animal Name: " + name);
+        System.out.println("Age: " + age);
+        System.out.println("Weight: " + weight);
+        System.out.println("Habitat: " + habitat);
+    }
+}
+
+interface Flyable {
+    public void fly();
+}
+
+interface Swimmable {
+    public void swim();
+}
+
+class Mammal extends Animal {
+    @Override
+    public void makeSound() {
+        System.out.println(name + " makes a growl sound");
+    }
+
+    @Override
+    public void eat() {
+        System.out.println(name + " munches to eat");
+    }
+
+    @Override
+    public void sleep() {
+        System.out.println(name + " can sleep");
+    }
+
+    @Override
+    public void displayDetails() {
+        super.displayDetails();
+        System.out.println("Animal Type: Mammal");
+    }
+}
+
+class Bird extends Animal implements Flyable {
+    @Override
+    public void makeSound() {
+        System.out.println(name + " goes tweet sound");
+    }
+
+    @Override
+    public void eat() {
+        System.out.println(name + " uses peck to eat");
+    }
+
+    @Override
+    public void sleep() {
+        System.out.println(name + " can sleep");
+    }
+
+    @Override
+    public void fly() {
+        System.out.println(name + " can fly around");
+    }
+
+    @Override
+    public void displayDetails() {
+        super.displayDetails();
+        System.out.println("Animal Type: Bird");
+    }
+}
+
+class Reptile extends Animal implements Swimmable {
+    @Override
+    public void makeSound() {
+        System.out.println(name + " makes a hiss sound");
+    }
+
+    @Override
+    public void eat() {
+        System.out.println(name + " munches to eat");
+    }
+
+    @Override
+    public void sleep() {
+        System.out.println(name + " can sleep");
+    }
+
+    @Override
+    public void swim() {
+        System.out.println(name + " can somehow swim around");
+    }
+
+    @Override
+    public void displayDetails() {
+        super.displayDetails();
+        System.out.println("Animal Type: Reptile");
+    }
+}
+
+class Fish extends Animal implements Swimmable {
+    @Override
+    public void makeSound() {
+        System.out.println(name + " makes a blub sounds");
+    }
+
+    @Override
+    public void eat() {
+        System.out.println(name + " can eat");
+    }
+
+    @Override
+    public void sleep() {
+        System.out.println(name + " can sleep");
+    }
+
+    @Override
+    public void swim() {
+        System.out.println(name + " can swim around");
+    }
+
+    @Override
+    public void displayDetails() {
+        super.displayDetails();
+        System.out.println("Animal Type: Fish");
+    }
+}
+
+class ZooManager {
+    List<Animal> animals = new ArrayList<>();
+
+    public void createAnimal(String name, int age, double weight, String type, String habitat) {
+        Animal animal;
+        switch (type.toLowerCase()) {
+            case "mammal":
+                animal = new Mammal();
+                break;
+            case "bird":
+                animal = new Bird();
+                break;
+            case "reptile":
+                animal = new Reptile();
+                break;
+            case "fish":
+                animal = new Fish();
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid animal type!");
+        }
+        animal.name = name;
+        animal.age = age;
+        animal.weight = weight;
+        animal.habitat = habitat; // Set habitat
+        animals.add(animal);
+    }
+
+    public void displayAllAnimalDetails() {
+        if (animals.isEmpty()) {
+            System.out.println("No animals added yet.");
+        } else {
+            for (Animal animal : animals) {
+                animal.displayDetails();
+                animal.makeSound();
+                animal.eat();
+                animal.sleep();
+                if (animal instanceof Flyable) {
+                    ((Flyable) animal).fly();
+                }
+                if (animal instanceof Swimmable) {
+                    ((Swimmable) animal).swim();
+                }
+            }
+        }
+    }
+}
+
+public class ZooManagementSystem {
+    public static void main(String[] args) {
+        ZooManager zooManager = new ZooManager();
+        Scanner scanner = new Scanner(System.in);
+        String choice;
+
+        do {
+            System.out.println("Welcome to Zoo Management System!");
+            System.out.println("1. ADD AN ANIMAL TO THE ZOO");
+            System.out.println("2. VIEW ALL THE ANIMALS");
+            System.out.println("3. EXIT THE PROGRAM");
+            System.out.println("Please enter your choice (1/2/3): ");
+            
+            // Loop until a valid choice is entered
+            do {
+                choice = scanner.next();
+                if (!choice.matches("[1-3]")) {
+                    System.out.println("Invalid choice! Please try again: ");
+                }
+            } while (!choice.matches("[1-3]"));
+
+            switch (choice) {
+                case "1":
+                    System.out.println("Enter name of an animal: ");
+                    String name = scanner.next();
+                    System.out.println("Enter age: ");
+                    int age = scanner.nextInt();
+                    System.out.println("Enter weight: ");
+                    double weight = scanner.nextDouble();
+                    System.out.println("Enter animal type (mammal, bird, reptile, fish): ");
+                    String type = scanner.next();
+                    System.out.println("Enter Habitat of the animal (Aviary, Aquarium, Savannah, Jungle): ");
+                    String habitat = scanner.next();
+                    zooManager.createAnimal(name, age, weight, type, habitat);
+                    break;
+                case "2":
+                    zooManager.displayAllAnimalDetails();
+                    break;
+                case "3":
+                    System.out.println("Exiting the program...");
+                    break;
+                default:
+                    System.out.println("Invalid choice! Please try again!");
+            }
+
+            if (!choice.equals("3")) {
+                System.out.println("Do you want to add another animal to the zoo? (yes/no): ");
+                choice = scanner.next();
+            }
+        } while (!choice.equals("3"));
+    }
+}
